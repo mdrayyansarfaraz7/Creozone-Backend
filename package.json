@@ -1,7 +1,7 @@
 {
   "name": "creozone-backend",
   "version": "1.0.0",
-  "type":"module",
+  "type": "module",
   "description": "Creozone Backend - A robust Express.js API powered by MongoDB and Mongoose, designed to support collaborative design sharing, refinement tracking, and creative contributions.",
   "main": "index.js",
   "scripts": {
@@ -11,9 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.12.1"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "validator": "^13.12.0",
+    "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
