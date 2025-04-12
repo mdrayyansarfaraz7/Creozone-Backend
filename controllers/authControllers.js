@@ -44,3 +44,35 @@ export const signup = async (req, res) => {
 
     res.status(201).json({ message: 'Signup successful!', user: newUser,token });
     }
+
+export const login=async (req,res) => {
+    const {email,password}=req.body;
+    const existingUser = await user.findOne({ email });
+    if(!existingUser){
+        return res.status(400).json({ 
+            message: 'Email does not exist!' 
+        });
+    }
+    const isCorrectPassword=await bcrypt.compare(password,existingUser.password);
+    if(!isCorrectPassword){
+      return  res.status(401).json({
+            message:'Incorrect Password'
+        });
+    }
+    const token=jwt.sign(
+        {id:existingUser._id,email:existingUser.email},
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+    )
+
+    res.cookie('token', token, {
+        httpOnly: true,   
+        secure: true,     
+        sameSite: 'Strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000  
+    });
+    const userData = existingUser.toObject();
+    delete userData.password;
+    
+    res.status(201).json({ message: 'Welcome Back to Creozone!', user: userData ,token });
+} 
