@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const outlookCreation=mongoose.Schema({
+const outlookSchema=mongoose.Schema({
     author: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
