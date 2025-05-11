@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -21,44 +20,65 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
     },
-    tools: [
-        {
-            type: String,
-            enum: [
-                "Adobe Photoshop",
-                "Adobe Illustrator",
-                "Figma",
-                "Adobe XD",
-                "Canva",
-                "Sketch",
-                "InVision",
-                "CorelDRAW",
-                "Affinity Designer",
-                "Blender",
-                "Cinema 4D",
-                "Adobe After Effects",
-                "Framer",
-                "Webflow",
-                "Procreate",
-                "Balsamiq",
-                "Miro",
-                "Marvel",
-                "LottieFiles",
-                "FontForge",
-                "Glyphs",
-                "ProtoPie",
-                "UXPin",
-                "Zeplin",
-                "Toon Boom Harmony",
-                "Lucidchart",
-                "Principle",
-                "Smartmockups",
-                "Photopea",
-                "WordPress + Elementor"
-            ]
-        }
-
-    ],
+    tools: [{
+        type: String,
+        enum: [
+            "Adobe Photoshop",
+            "Adobe Illustrator",
+            "Figma",
+            "Adobe XD",
+            "Canva",
+            "Sketch",
+            "InVision",
+            "CorelDRAW",
+            "Affinity Designer",
+            "Blender",
+            "Cinema 4D",
+            "Adobe After Effects",
+            "Framer",
+            "Webflow",
+            "Procreate",
+            "Balsamiq",
+            "Miro",
+            "Marvel",
+            "LottieFiles",
+            "FontForge",
+            "Glyphs",
+            "ProtoPie",
+            "UXPin",
+            "Zeplin",
+            "Toon Boom Harmony",
+            "Lucidchart",
+            "Principle",
+            "Smartmockups",
+            "Photopea",
+            "WordPress + Elementor"
+        ]
+    }],
+    designerType: {
+        type: String,
+        enum: [
+            "Graphic Designer",
+            "UI/UX Designer",
+            "Product Designer",
+            "Web Designer",
+            "Visual Designer",
+            "Interaction Designer",
+            "Motion Designer",
+            "Brand Designer",
+            "Logo Designer",
+            "Print Designer",
+            "Illustrator",
+            "2D Animator",
+            "3D Designer",
+            "3D Animator",
+            "Typographer",
+            "Design Strategist",
+            "Creative Director",
+            "Art Director",
+            "Mobile App Designer"
+        ]
+    },
     stash: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -98,15 +118,15 @@ const userSchema = new mongoose.Schema({
     ],
     followers: [
         {
-         type: mongoose.Schema.Types.ObjectId,
-          ref: 'User' 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
         }
     ],
     following: [
-        { 
-            type: mongoose.Schema.Types.ObjectId, 
+        {
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-         }]
+        }]
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);
