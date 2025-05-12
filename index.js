@@ -13,7 +13,7 @@ dotenv.config();
 connectDB();
 
 const app=express();
-
+console.log("Cloud Name:", process.env.CLOUD_NAME);
 app.use(cors({
     origin: 'http://localhost:5173', 
     credentials: true               

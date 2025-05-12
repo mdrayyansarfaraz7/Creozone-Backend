@@ -8,6 +8,12 @@ export const updateUser = async (req, res) => {
     console.log("Update data:", updatedFields);
 
     try {
+       
+        if (req.file && req.file.path) {
+            console.log(req.file.path);
+            updatedFields.avatar = req.file.path; 
+        }
+
         const updatedUser = await user.findByIdAndUpdate(
             id,
             updatedFields,
@@ -21,10 +27,11 @@ export const updateUser = async (req, res) => {
         console.log("Updated user:", updatedUser);
         res.status(201).send({ message: "Successfully updated user details!", updatedUser });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(400).send({ message: "Error in updating the User! Please try again later." });
     }
-}
+};
+
 
 export const getUser=async(req,res)=>{
     const {username}=req.params;

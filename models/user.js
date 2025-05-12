@@ -36,23 +36,7 @@ const userSchema = new mongoose.Schema({
             "Cinema 4D",
             "Adobe After Effects",
             "Framer",
-            "Webflow",
-            "Procreate",
-            "Balsamiq",
-            "Miro",
-            "Marvel",
-            "LottieFiles",
-            "FontForge",
-            "Glyphs",
-            "ProtoPie",
-            "UXPin",
-            "Zeplin",
-            "Toon Boom Harmony",
-            "Lucidchart",
-            "Principle",
-            "Smartmockups",
-            "Photopea",
-            "WordPress + Elementor"
+            "Glyphs"
         ]
     }],
     designerType: {
