@@ -55,12 +55,6 @@ const stashSchema = mongoose.Schema({
                 default: Date.now
             }
         }
-    ],
-    likes: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: 'User'
-        }
     ]
 }, { timestamps: true });
 

@@ -15,6 +15,32 @@ const creationSchema=mongoose.Schema({
             type:mongoose.Types.ObjectId,
              ref: 'Outlooks'
         }
+    ],
+    stash:{
+        type:mongoose.Types.ObjectId,
+        ref:'Stash'
+    },
+    category:{
+        type:"String",
+        enum:
+        [
+            'logos',
+            'card-designs',
+            'branding',
+            'graphics',
+            'iconography',
+            'ui-ux-design',
+            'mocups',
+            'print-design',
+            'packaging',
+            'news-letter'
+        ]
+    },
+    likes: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'User'
+        }
     ]
 } ,{ timestamps: true });
 
