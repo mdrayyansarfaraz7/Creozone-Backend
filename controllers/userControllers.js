@@ -36,7 +36,13 @@ export const updateUser = async (req, res) => {
 export const getUser=async(req,res)=>{
     const {username}=req.params;
     try {
-        const userDetails=await user.findOne({username}).populate('stash').populate('creations');
+        const userDetails=await user.findOne({username}).populate({
+    path: 'stash',
+    populate: {
+      path: 'styleChain.designer',
+      select: 'username avatar',
+    }
+  }).populate('creations');
         if(userDetails){
             res.status(200).send({message:"User found",userDetails});
         }
