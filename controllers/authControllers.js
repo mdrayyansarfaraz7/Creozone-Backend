@@ -95,8 +95,6 @@ export const logout = (req, res) => {
   res.status(200).json({ message: 'Successfully logged out!' });
 };
 
-
-
 export const verifyUser = async (req, res) => {
   const token = req.cookies.token;
   if (!token) {
@@ -104,7 +102,7 @@ export const verifyUser = async (req, res) => {
   }
   try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const currentUser = await user.findById(decoded.id).select('-password');
+      const currentUser = await user.findById(decoded.id).select('-password').populate('stash').populate('creations');
       if (!currentUser) {
           return res.status(404).json({ message: 'User not found' });
       }

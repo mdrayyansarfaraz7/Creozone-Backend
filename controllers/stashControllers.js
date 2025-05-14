@@ -10,8 +10,10 @@ export const createStash = async (req, res) => {
     return res.status(400).send('Invalid user ID');
   }
 
-  const { title, desc } = req.body;
-
+  const { title, desc, category } = req.body;
+  if (!title || !desc || !category) {
+    return res.status(400).json({ message: 'Required field missing!' });
+  }
   try {
     const thumbnail = req.files?.['thumbnail']?.[0]?.path;
     const images = req.files?.['images'] || [];
@@ -30,7 +32,8 @@ export const createStash = async (req, res) => {
     const thumbnailCreation = await creation.create({
       author: id,
       url: thumbnail,
-      stash: newStash._id
+      stash: newStash._id,
+      category
     });
 
     newStash.creations.push(thumbnailCreation._id);
@@ -43,7 +46,8 @@ export const createStash = async (req, res) => {
         const cre = await creation.create({
           author: id,
           url: obj.path,
-          stash: newStash._id
+          stash: newStash._id,
+          category
         });
         newStash.creations.push(cre._id);
         await user.findByIdAndUpdate(id, {
@@ -66,3 +70,21 @@ export const createStash = async (req, res) => {
     res.status(500).send('Upload failed');
   }
 };
+
+export const findStash=async(req,res)=>{
+    const {id}=req.params;
+    try {
+      const stashDetails=await stash.findOne({id});
+      if(!stashDetails){
+    res.status(401).send({message:"Stash Not found found"});
+      }
+      else{
+    res.send({message:"Stash found",stashDetails});
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(401).send({message:"Stash Not found found"});
+    }
+}
+
+
