@@ -18,3 +18,26 @@ export const findCreation=async(req,res)=>{
       res.status(401).send({message:"Something went wrong"});
     }
 }
+export const findCategoryCreation = async (req, res) => {
+  const { category } = req.params;
+
+  if (!category) {
+    return res.status(400).send({ message: "Category is necessary" });
+  }
+
+  try {
+    const categoryCreations = await creation.find({ category });
+
+    if (categoryCreations.length === 0) {
+      return res.status(404).send({ message: "No creations found in this category." });
+    }
+
+    res.status(200).send({
+      message: "All creations of category",
+      creations: categoryCreations,
+    });
+  } catch (error) {
+    console.error("Error in findCategoryCreation:", error);
+    res.status(500).send({ message: "Something went wrong!" });
+  }
+};
