@@ -4,7 +4,7 @@ export const findCreation=async(req,res)=>{
     const {id}=req.params;
     console.log(id);
     try {
-      const creationDetails = await creation.findById(id).populate({path:'author',select:'username email avatar'}).populate({path:'stash',select:'title'});
+      const creationDetails = await creation.findById(id).populate({path:'author',select:'username email avatar _id'}).populate({path:'stash',select:'title'});
       console.log(creationDetails);
       if(!creationDetails){
     res.status(401).send({message:"Creation Not  found"});

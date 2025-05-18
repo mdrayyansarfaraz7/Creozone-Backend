@@ -23,6 +23,8 @@ const stashSchema = mongoose.Schema({
             ref: 'Creation'
         }
     ],
+    tags: [String],
+    theme: { type: String },
     styleChain: [
         {
             designer: {
