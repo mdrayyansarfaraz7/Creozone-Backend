@@ -88,4 +88,22 @@ export const findStash=async(req,res)=>{
     }
 }
 
+export const allStashes=async(req,res)=>{
+  const {username}=req.params;
+  try {
+  const userDetails = await user.findOne({ username });
+    if (!userDetails) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const allStashes = await stash.find({ owner: userDetails._id })
+      .populate('creations')
+      .populate('styleChain.designer');
+
+       res.status(200).json({message:"Found All Stashes",allStashes});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
 
