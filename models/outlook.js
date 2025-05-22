@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const outlookSchema=mongoose.Schema({
     author: {
         type: mongoose.Types.ObjectId,
@@ -10,7 +9,12 @@ const outlookSchema=mongoose.Schema({
         type: String,
         required: true
     },
-    refinementRequest: [
+    creation:{
+        type:mongoose.Types.ObjectId,
+        ref: 'Creation'
+    },
+    refinementRequest: 
+    [
         {
             type: mongoose.Types.ObjectId,
             ref: 'Refinements' 

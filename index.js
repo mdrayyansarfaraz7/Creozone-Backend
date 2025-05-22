@@ -6,10 +6,9 @@ import authrouter from './routes/authRoutes.js';
 import userrouter from './routes/userRoutes.js';
 import stashrouter from './routes/stashRouts.js';
 import creationrouter from './routes/creationsRouth.js'
+import outlookrouter from './routes/outlooksRoutes.js';
 import cors from 'cors';
-import user from './models/user.js';
-import creation from './models/creation.js';
-import stash from './models/stash.js';
+
 
 dotenv.config();
 
@@ -30,7 +29,7 @@ app.use('/api/auth',authrouter);
 app.use('/api/user',userrouter);
 app.use('/api/stash',stashrouter);
 app.use('/api/creation',creationrouter);
-
+app.use('/api/outlook',outlookrouter);
 
 
 app.listen(8080,()=>{

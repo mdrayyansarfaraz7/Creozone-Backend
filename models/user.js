@@ -75,11 +75,6 @@ const userSchema = new mongoose.Schema({
             id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Refinements'
-            },
-            status: {
-                type: String,
-                enum: ['accepted', 'pending'],
-                default: 'pending'
             }
         }
     ],
