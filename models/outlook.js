@@ -17,7 +17,7 @@ const outlookSchema=mongoose.Schema({
     [
         {
             type: mongoose.Types.ObjectId,
-            ref: 'Refinements' 
+            ref: 'Refinement' 
         }
     ]
 }, { timestamps: true });

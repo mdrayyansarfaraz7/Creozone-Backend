@@ -6,22 +6,18 @@ import Creation from "../models/creation.js";
 export const createOutlook = async (req, res) => {
   const { id } = req.params; 
   const { author, feedback } = req.body;
-
   try {
     const existingCreation = await Creation.findById(id);
     if (!existingCreation) {
       return res.status(400).json({ message: "No creation found by such Id!" });
     }
-
     if (!author || !feedback) {
       return res.status(400).json({ message: "Credentials required" });
     }
-
     const proposer = await User.findOne({ username: author });
     if (!proposer) {
       return res.status(404).json({ message: "Author not found" });
     }
-
     let newRefinement = null;
     if (req.file && req.file.path) {
       newRefinement = await Refinement.create({
@@ -30,7 +26,6 @@ export const createOutlook = async (req, res) => {
         status: "pending"
       });
     }
-
     const newOutlook = await Outlook.create({
       author: proposer._id,
       feedback,
@@ -62,3 +57,23 @@ export const createOutlook = async (req, res) => {
     res.status(500).json({ message: "Something went wrong!" });
   }
 };
+
+
+export const findOutlooksForCreation = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const existingCreation = await Creation.findById(id);
+    if (!existingCreation) {
+      return res.status(400).json({ message: "No creation found by such Id!" });
+    }
+    const outlooks = await Outlook.find({ creation: id })
+      .populate("author", "username avatar")
+      .populate("refinementRequest"); 
+
+    res.status(200).json({ outlooks });
+  } catch (error) {
+    console.error("Error fetching outlooks:", error);
+    res.status(500).json({ message: "Server error while fetching outlooks." });
+  }
+};
+

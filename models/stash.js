@@ -37,26 +37,6 @@ const stashSchema = mongoose.Schema({
                 default: 'creator'
             }
         }
-    ],
-    Resculpt: [
-        {
-            resculpter: {
-                type: mongoose.Types.ObjectId,
-                ref: 'User'
-            },
-            imgUrl: {
-                type: String,
-                required: true
-            },
-            description: {
-                type: String,
-                required: true
-            },
-            createdAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
     ]
 }, { timestamps: true });
 
