@@ -72,6 +72,7 @@ const userSchema = new mongoose.Schema({
     ],
     refinements: [
         {
+            _id: false,
             id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Refinements'

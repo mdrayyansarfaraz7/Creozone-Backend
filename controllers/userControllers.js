@@ -5,7 +5,7 @@ export const updateUser = async (req, res) => {
     const updatedFields = req.body;
     try {
         if (req.file && req.file.path) {
-            updatedFields.avatar = req.file.path; 
+            updatedFields.avatar = req.file.path;
         }
         const updatedUser = await user.findByIdAndUpdate(
             id,
@@ -22,24 +22,27 @@ export const updateUser = async (req, res) => {
 };
 
 
-export const getUser=async(req,res)=>{
-    const {username}=req.params;
+export const getUser = async (req, res) => {
+    const { username } = req.params;
     try {
-        const userDetails=await user.findOne({username}).populate({
-    path: 'stash',
-    populate: {
-      path: 'styleChain.designer',
-      select: 'username avatar',
-    }
-  }).populate('creations');
-        if(userDetails){
-            res.status(200).send({message:"User found",userDetails});
+        const userDetails = await user.findOne({ username }).populate({
+            path: 'stash',
+            populate: {
+                path: 'styleChain.designer',
+                select: 'username avatar',
+            }
+        }).populate('creations').populate({
+    path: 'refinements.id',
+    model: 'Refinement'
+  });;
+        if (userDetails) {
+            res.status(200).send({ message: "User found", userDetails });
         }
-        else{
-            res.status(420).send({message:"User with such username was not found in our Database"});
+        else {
+            res.status(420).send({ message: "User with such username was not found in our Database" });
         }
     } catch (error) {
         console.log(error);
-         res.status(420).send({message:"User with such username was not found in our Database"});
+        res.status(420).send({ message: "User with such username was not found in our Database" });
     }
 }
