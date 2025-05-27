@@ -1,6 +1,8 @@
 import creation from "../models/creation.js";
 import refinement from "../models/refinement.js";
 import stash from "../models/stash.js";
+import User from "../models/user.js";  // <-- Import User model
+
 export const acceptRefinement = async (req, res) => {
   const { id } = req.params;
   const { url, proposer, creationId } = req.body;
@@ -15,15 +17,18 @@ export const acceptRefinement = async (req, res) => {
       return res.status(404).send({ message: "No refinement exists by this id" });
     }
     refinementReq.status = "accepted";
+
     const CreationDetails = await creation.findById(creationId);
     const stashId = CreationDetails.stash;
     const cat = CreationDetails.category;
+
     const NewCreation = await creation.create({
       url,
       author: proposer,
       stash: stashId,
       category: cat,
     });
+
     await stash.findByIdAndUpdate(stashId, {
       $push: {
         creations: NewCreation._id,
@@ -32,6 +37,9 @@ export const acceptRefinement = async (req, res) => {
           role: "contributor",
         }
       }
+    });
+    await User.findByIdAndUpdate(proposer, {
+      $push: { creations: NewCreation._id }
     });
 
     await refinementReq.save();
