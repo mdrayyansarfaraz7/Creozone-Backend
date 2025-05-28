@@ -74,7 +74,22 @@ export const createStash = async (req, res) => {
 export const findStash=async(req,res)=>{
     const {id}=req.params;
     try {
-      const stashDetails=await stash.findById(id).populate('styleChain.designer').populate('creations');
+      const stashDetails = await stash
+  .findById(id)
+  .populate('styleChain.designer')
+  .populate('owner')
+  .populate({
+    path: 'creations',
+    populate: [
+      {
+        path: 'author',
+        select: '_id username email avatar',
+      },
+      {
+        path: 'outlooks',
+      },
+    ],
+  });
       console.log(stashDetails);
       if(!stashDetails){
     res.status(401).send({message:"Stash Not found found"});
