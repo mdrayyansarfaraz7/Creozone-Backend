@@ -113,7 +113,7 @@ export const allStashes=async(req,res)=>{
     const allStashes = await stash.find({ owner: userDetails._id })
       .populate('creations')
       .populate('styleChain.designer');
-
+console.log(allStashes);
        res.status(200).json({message:"Found All Stashes",allStashes});
   } catch (error) {
     console.log(error);
