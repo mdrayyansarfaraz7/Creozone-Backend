@@ -41,3 +41,55 @@ export const findCategoryCreation = async (req, res) => {
     res.status(500).send({ message: "Something went wrong!" });
   }
 };
+
+export const likeCreation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const creationDetails = await creation.findById(id);
+    if (!creationDetails) {
+      return res.status(404).json({ message: "No creation found!" });
+    }
+
+    if (creationDetails.likes.includes(userId)) {
+      return res.status(400).json({ message: "Already liked by this user." });
+    }
+
+    creationDetails.likes.push(userId);
+    await creationDetails.save();
+
+    res.status(200).json({ message: `Like added by user ID: ${userId}` });
+  } catch (err) {
+    console.error("Error liking creation:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const unlikeCreation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const creationDetails = await creation.findById(id);
+    if (!creationDetails) {
+      return res.status(404).json({ message: "No creation found!" });
+    }
+
+    if (!creationDetails.likes.includes(userId)) {
+      return res.status(400).json({ message: "You never liked this creation." });
+    }
+    creationDetails.likes = creationDetails.likes.filter(
+      (likeId) => likeId.toString() !== userId
+    );
+
+    await creationDetails.save();
+
+    res.status(200).json({ message: `Unliked by user ID: ${userId}` });
+  } catch (err) {
+    console.error("Error unliking creation:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
