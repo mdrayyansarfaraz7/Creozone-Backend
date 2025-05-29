@@ -11,6 +11,7 @@ import refinementrouter from './routes/refinementRoutes.js';
 import cors from 'cors';
 
 
+
 dotenv.config();
 
 connectDB();
@@ -32,6 +33,8 @@ app.use('/api/stash',stashrouter);
 app.use('/api/creation',creationrouter);
 app.use('/api/outlook',outlookrouter);
 app.use('/api/refinement',refinementrouter);
+
+
 
 app.listen(8080,()=>{
     console.log('Listining to port 8080.')
