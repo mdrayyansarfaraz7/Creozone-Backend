@@ -5,26 +5,26 @@ import user from "../models/user.js";
 
 export const createStash = async (req, res) => {
   const { id } = req.params;
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send('Invalid user ID');
   }
-
-  const { title, desc, category } = req.body;
+  const { title, desc, category, tags } = req.body;
   if (!title || !desc || !category) {
     return res.status(400).json({ message: 'Required field missing!' });
   }
   try {
     const thumbnail = req.files?.['thumbnail']?.[0]?.path;
-    const images = req.files?.['images'] || [];
     const styleChain = [{ designer: id, role: "creator" }];
+    
     const newStash = await stash.create({
       title,
       desc,
       thumbnail,
       owner: id,
-      styleChain
+      styleChain,
+      tags: tags ? tags.split(',').map(tag => tag.trim()) : [] 
     });
+
     await user.findByIdAndUpdate(id, {
       $push: { stash: newStash._id }
     });
@@ -41,36 +41,19 @@ export const createStash = async (req, res) => {
     await user.findByIdAndUpdate(id, {
       $push: { creations: thumbnailCreation._id }
     });
-    const imageCreations = await Promise.all(
-      images.map(async (obj) => {
-        const cre = await creation.create({
-          author: id,
-          url: obj.path,
-          stash: newStash._id,
-          category
-        });
-        newStash.creations.push(cre._id);
-        await user.findByIdAndUpdate(id, {
-          $push: { creations: cre._id }
-        });
 
-        return cre;
-      })
-    );
     await newStash.save();
 
     res.status(201).json({
-      message: 'Stash and creations saved',
+      message: 'Stash and creation saved',
       stash: newStash,
-      creations: [thumbnailCreation, ...imageCreations]
+      creations: [thumbnailCreation]
     });
-
   } catch (error) {
     console.error('Error during upload:', error);
     res.status(500).send('Upload failed');
   }
 };
-
 export const findStash=async(req,res)=>{
     const {id}=req.params;
     try {

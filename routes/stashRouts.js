@@ -5,7 +5,7 @@ import { allStashes, createStash, findStash } from '../controllers/stashControll
 
 const router=express.Router();
 
-router.post('/create-stash/:id',authenticateUser,upload.fields([{name:'images'},{name:'thumbnail',maxCount:1}]),createStash);
+router.post('/create-stash/:id',authenticateUser,upload.fields([{name:'thumbnail',maxCount:1}]),createStash);
 
 router.get('/:id',findStash);
 

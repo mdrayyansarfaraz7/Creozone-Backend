@@ -24,7 +24,6 @@ const stashSchema = mongoose.Schema({
         }
     ],
     tags: [String],
-    theme: { type: String },
     styleChain: [
         {
             designer: {
