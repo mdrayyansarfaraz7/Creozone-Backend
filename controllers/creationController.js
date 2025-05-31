@@ -1,22 +1,60 @@
 import creation from "../models/creation.js";
+import stash from "../models/stash.js";
+import user from "../models/user.js";
 
-export const findCreation=async(req,res)=>{
-    const {id}=req.params;
-    console.log(id);
-    try {
-      const creationDetails = await creation.findById(id).populate({path:'author',select:'username email avatar _id'}).populate({path:'stash',select:'title'}).populate('outlooks');
-      console.log(creationDetails);
-      if(!creationDetails){
-    res.status(401).send({message:"Creation Not  found"});
-      }
-      else{
-    res.send({message:"Creaton found",creationDetails});
-      }
-    } catch (error) 
-    {
-      console.log(error);
-      res.status(401).send({message:"Something went wrong"});
+export const createCreation = async (req, res) => {
+  const { id } = req.params;
+  const { userId, tags, category } = req.body;
+
+  if (!userId || !tags || !category) {
+    return res.status(400).send({ message: "All fields (userId, tags, category) are required" });
+  }
+
+  try {
+    const creationURL = req.file?.path;
+    if (!creationURL) {
+      return res.status(400).send({ message: "Creation design missing" });
     }
+
+    const newCreation = await creation.create({
+      author: userId,
+      url: creationURL,
+      category,
+      tags,
+      stash: id
+    });
+
+    await stash.findByIdAndUpdate(id, {
+      $push: { creations: newCreation._id }
+    });
+
+    await user.findByIdAndUpdate(userId, {
+      $push: { creations: newCreation._id }
+    });
+    
+    return res.status(201).send({ message: "Creation created", newCreation });
+  } catch (error) {
+    console.error("Creation error:", error);
+    return res.status(500).send({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const findCreation = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const creationDetails = await creation.findById(id).populate({ path: 'author', select: 'username email avatar _id' }).populate({ path: 'stash', select: 'title' }).populate('outlooks');
+    console.log(creationDetails);
+    if (!creationDetails) {
+      res.status(401).send({ message: "Creation Not  found" });
+    }
+    else {
+      res.send({ message: "Creaton found", creationDetails });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(401).send({ message: "Something went wrong" });
+  }
 }
 export const findCategoryCreation = async (req, res) => {
   const { category } = req.params;

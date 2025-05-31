@@ -33,7 +33,8 @@ export const createStash = async (req, res) => {
       author: id,
       url: thumbnail,
       stash: newStash._id,
-      category
+      category,
+      tags:tags
     });
 
     newStash.creations.push(thumbnailCreation._id);
