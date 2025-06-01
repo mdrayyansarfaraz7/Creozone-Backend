@@ -1,78 +1,78 @@
 import user from "../models/user.js";
 
 export const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const updatedFields = req.body;
-    try {
-        if (req.file && req.file.path) {
-            updatedFields.avatar = req.file.path;
-        }
-        const updatedUser = await user.findByIdAndUpdate(
-            id,
-            updatedFields,
-            { new: true, runValidators: true }
-        );
-        if (!updatedUser) {
-            return res.status(404).send({ message: "User not found" });
-        }
-        res.status(201).send({ message: "Successfully updated user details!", updatedUser });
-    } catch (error) {
-        res.status(400).send({ message: "Error in updating the User! Please try again later." });
+  const { id } = req.params;
+  const updatedFields = req.body;
+  try {
+    if (req.file && req.file.path) {
+      updatedFields.avatar = req.file.path;
     }
+    const updatedUser = await user.findByIdAndUpdate(
+      id,
+      updatedFields,
+      { new: true, runValidators: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(201).send({ message: "Successfully updated user details!", updatedUser });
+  } catch (error) {
+    res.status(400).send({ message: "Error in updating the User! Please try again later." });
+  }
 };
 
 
 export const getUser = async (req, res) => {
-    const { username } = req.params;
-    try {
-        const userDetails = await user.findOne({ username })
-            .populate({
-                path: 'stash',
-                populate: {
-                    path: 'styleChain.designer',
-                    select: 'username avatar',
-                }
-            })
-            .populate('creations')
-            .populate({
-                path: 'refinements.id',
-                model: 'Refinement'
-            })
-            .populate({
-                path: 'outlooks',
-                populate: [
-                    {
-                        path: 'author',
-                        model: 'User',
-                        select: 'username avatar'
-                    },
-                    {
-                        path: 'refinementRequest',
-                        model: 'Refinement',
-                        populate: {
-                            path: 'proposer',
-                            model: 'User',
-                            select: 'username avatar'
-                        }
-                    }
-                ]
-            });
+  const { username } = req.params;
+  try {
+    const userDetails = await user.findOne({ username })
+      .populate({
+        path: 'stash',
+        populate: {
+          path: 'styleChain.designer',
+          select: 'username avatar',
+        }
+      })
+      .populate('creations')
+      .populate({
+        path: 'refinements.id',
+        model: 'Refinement'
+      })
+      .populate({
+        path: 'outlooks',
+        populate: [
+          {
+            path: 'author',
+            model: 'User',
+            select: 'username avatar'
+          },
+          {
+            path: 'refinementRequest',
+            model: 'Refinement',
+            populate: {
+              path: 'proposer',
+              model: 'User',
+              select: 'username avatar'
+            }
+          }
+        ]
+      });
 
-        if (userDetails) {
-            res.status(200).send({ message: "User found", userDetails });
-        }
-        else {
-            res.status(420).send({ message: "User with such username was not found in our Database" });
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(420).send({ message: "User with such username was not found in our Database" });
+    if (userDetails) {
+      res.status(200).send({ message: "User found", userDetails });
     }
+    else {
+      res.status(420).send({ message: "User with such username was not found in our Database" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(420).send({ message: "User with such username was not found in our Database" });
+  }
 }
 
 export const follow = async (req, res) => {
-  const { username } = req.params; 
-  const { userId } = req.body;     
+  const { username } = req.params;
+  const { userId } = req.body;
 
   try {
     if (!userId) {
@@ -128,8 +128,6 @@ export const unfollow = async (req, res) => {
     if (!currentUser.following.includes(userToUnfollow._id)) {
       return res.status(400).json({ message: "You don't follow this user!" });
     }
-
-    // Remove from both sides
     currentUser.following = currentUser.following.filter(
       (id) => id.toString() !== userToUnfollow._id.toString()
     );
@@ -147,5 +145,32 @@ export const unfollow = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong!" });
   }
 };
+
+export const topCreators = async (req, res) => {
+  try {
+    const topCreators = await user.aggregate([
+      {
+        $addFields: {
+          followerCount: { $size: { $ifNull: ["$followers", []] } },
+          creationCount: { $size: { $ifNull: ["$creations", []] } }
+        }
+      },
+      {
+        $sort: {
+          followerCount: -1,
+          creationCount: -1
+        }
+      },
+      {
+        $limit: 3
+      },
+    ]);
+return res.status(201).send({message:"top creators",topCreators});
+
+  } catch (error) {
+    console.log(error);
+    return res.send({error:error.message});
+  }
+}
 
 

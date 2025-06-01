@@ -104,5 +104,48 @@ console.log(allStashes);
     res.status(500).json({ message: 'Server error' });
   }
 }
+export const everyStash = async (req, res) => {
+  try {
+    const stashes = await stash.find({}).populate('styleChain.designer');
+    return res.status(200).json({
+      message: "All stashes returned",
+      stashes,
+    });
+  } catch (error) {
+    console.error("Error fetching all stashes:", error);
+    return res.status(500).json({
+      message: "Failed to fetch stashes",
+      error: error.message,
+    });
+  }
+};
 
+export const searchStashes = async (req, res) => {
+  const { q, tag } = req.query;
+
+  const query = {};
+
+  if (q) {
+    query.$or = [
+      { title: new RegExp(q, 'i') },
+      { desc: new RegExp(q, 'i') },
+      { tags: { $in: [new RegExp(q, 'i')] } }
+    ];
+  }
+
+  if (tag) {
+    query.tags = tag;
+  }
+
+  try {
+    const stashes = await stash.find(query)
+      .populate('styleChain.designer')
+      .populate({ path: 'creations', select: '_id' })
+      .sort({ createdAt: -1 });
+
+    res.status(200).send({ stashes });
+  } catch (err) {
+    res.status(500).send({ message: "Error fetching stashes", error: err.message });
+  }
+};
 
