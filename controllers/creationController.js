@@ -56,6 +56,7 @@ export const findCreation = async (req, res) => {
     res.status(401).send({ message: "Something went wrong" });
   }
 }
+
 export const findCategoryCreation = async (req, res) => {
   const { category } = req.params;
 
@@ -129,5 +130,48 @@ export const unlikeCreation = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const allThumbnails = async (req, res) => {
+  try {
+    const stashes = await stash.find({}).populate('creations');
+
+    const allThumbnails = stashes
+      .map(s => s.creations?.[0])
+      .filter(Boolean);
+
+    const sortedThumbnails = allThumbnails.sort((a, b) => {
+      const likesA = Array.isArray(a.likes) ? a.likes.length : a.likes || 0;
+      const likesB = Array.isArray(b.likes) ? b.likes.length : b.likes || 0;
+      return likesB - likesA;
+    });
+
+    res.status(200).json({ thumbnails: sortedThumbnails });
+  } catch (error) {
+    console.error("Error fetching creations:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+export const searchCreations = async (req, res) => {
+  const { q } = req.query;
+
+  let query = {};
+
+  if (q) {
+    query = {
+      tags: { $in: [new RegExp(q, 'i')] } 
+    };
+  }
+
+  try {
+    const Allcreations = await creation.find(query).populate('author');
+    res.status(200).send({ Allcreations });
+  } catch (err) {
+    res.status(500).send({ message: "Error fetching creations", error: err.message });
+  }
+};
+
+
 
 

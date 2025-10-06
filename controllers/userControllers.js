@@ -3,6 +3,7 @@ import user from "../models/user.js";
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const updatedFields = req.body;
+  console.log(updatedFields);
   try {
     if (req.file && req.file.path) {
       updatedFields.avatar = req.file.path;
@@ -156,6 +157,9 @@ export const topCreators = async (req, res) => {
         }
       },
       {
+        $project: { password: 0 }
+      },
+      {
         $sort: {
           followerCount: -1,
           creationCount: -1
@@ -165,12 +169,12 @@ export const topCreators = async (req, res) => {
         $limit: 3
       },
     ]);
-return res.status(201).send({message:"top creators",topCreators});
 
+    return res.status(200).send({ message: "top creators", topCreators });
   } catch (error) {
     console.log(error);
-    return res.send({error:error.message});
+    return res.status(500).send({ error: error.message });
   }
-}
+};
 
 
