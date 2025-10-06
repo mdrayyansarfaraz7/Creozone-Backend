@@ -31,18 +31,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(cookieParser());
-app.delete('/delete-all',async(req,res)=>{
-  try {
-    await user.deleteMany({});
-    await creation.deleteMany({});
-    await stash.deleteMany({});
-    await outlook.deleteMany({});
-    await refinement.deleteMany({});
-    res.send({message:"Cleared"});
-  } catch (error) {
-    console.log(error);
-  }
-})
+
 app.use('/api/auth',authrouter);
 app.use('/api/user',userrouter);
 app.use('/api/stash',stashrouter);
