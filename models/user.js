@@ -3,6 +3,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     email: {
         type: String,
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema({
     sex: {
         type: String,
         enum: ['Male', 'Female'],
-        default:'Male'
+        default: 'Male'
     },
     avatar: {
         type: String,

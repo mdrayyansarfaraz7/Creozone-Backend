@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import user from '../models/user.js';
 import nodemailer from 'nodemailer';
 import paigam from "paigam";
+
 export const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -15,14 +16,14 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email address.' });
     }
 
-
+    const existingUsername = await user.findOne({ username });
+    if (existingUsername && existingUsername.email !== email) {
+      return res.status(400).json({ message: 'Username is already taken. Please choose another.' });
+    }
 
     const existingUser = await user.findOne({ email });
     if (existingUser) {
       if (!existingUser.isVerified) {
-        // If user exists but is not verified, they can try to signup again and we'll send a new OTP
-        // Update their password, otp, etc. Or just tell them to verify.
-        // Let's just generate a new OTP for the existing unverified user.
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
 
